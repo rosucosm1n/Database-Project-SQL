@@ -1,0 +1,66 @@
+---------------------------------------PT SQLITE 3-----------------------
+CREATE TABLE tipProduse (
+    tipId INTEGER PRIMARY KEY AUTOINCREMENT,
+    description VARCHAR(25) UNIQUE,
+    adaosComercialPct REAL,
+    TVA REAL
+);
+
+CREATE TABLE produs (
+     produsId INTEGER PRIMARY KEY AUTOINCREMENT,
+     tipProdus INTEGER,
+     stoc INTEGER,
+     pretDeBaza REAL,		
+     pretFinal REAL,
+     nume TEXT,	
+     FOREIGN KEY (tipProdus) REFERENCES tipProduse(tipId)
+);
+
+CREATE TABLE cosCump (
+    produsID INTEGER,
+    nrBucati INTEGER NOT NULL,
+    pretTotal REAL,
+    FOREIGN KEY (produsID) REFERENCES produs(produsId)
+);
+
+CREATE TABLE vanzare (
+    idv INTEGER PRIMARY KEY AUTOINCREMENT,
+    valoareTotala INTEGER,
+    nrProduse INTEGER
+);
+
+
+CREATE TRIGGER trg_calcul_pretFinal
+ AFTER INSERT ON produs
+ FOR EACH ROWint
+ BEGIN
+     UPDATE produs
+     SET pretFinal = NEW.pretDeBaza * (1 + (SELECT adaosComercialPct FROM tipProduse WHERE tipId = NEW.tipProdus) + (SELECT TVA FROM tipProduse WHERE tipId = NEW.tipProdus))
+     WHERE produsId = NEW.produsId;
+ END;
+
+
+
+------------------INSERT-URI------------------
+INSERT INTO tipProduse (description, adaosComercialPct, TVA)
+VALUES ("Alimente pe baza de cacao", 0.3, 0.09);
+INSERT INTO tipProduse (description, adaosComercialPct, TVA)
+VALUES ("Alimente de baza", 0.4, 0.09);
+INSERT INTO tipProduse (description, adaosComercialPct, TVA)
+VALUES ("Alcool", 0.5, 0.19);
+
+INSERT INTO produs (tipProdus, stoc, pretDeBaza, nume)
+VALUES (2, 100, 5, "Faina");
+INSERT INTO produs (tipProdus, stoc, pretDeBaza, nume)
+VALUES (1, 40, 3, "Baton de ciocolata");
+
+INSERT INTO produs (tipProdus, stoc, pretDeBaza, nume)
+VALUES (3, 30, 25, "Vin rosu");
+INSERT INTO produs (tipProdus, stoc, pretDeBaza, nume)
+VALUES (3, 30, 23, "Vin alb");
+INSERT INTO produs (tipProdus, stoc, pretDeBaza, nume)
+VALUES (3, 100, 3.5, "Bere Carlsberg");
+
+
+
+
