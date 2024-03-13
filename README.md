@@ -2,7 +2,7 @@
 
 This is a project in which me and a classmate had to create a database for a supermarket.
 My tasks in this project were:
-- Creation of the database, with all it's particularities
+- Creation of the database, with all its particularities
 - Interaction between the database and the UI (created using Java)
 - Creation of the documentation
 
